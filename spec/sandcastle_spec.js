@@ -9,6 +9,7 @@ describe('SandCastle', function () {
 
   it('should run tests with a different window scope', function() {
     window.foo = 'bar';
+    sandcastle.addScript('sandboxed_spec.js');
     var completedInit = false;
     sandcastle.init(function () {
         completedInit = true;
@@ -17,18 +18,12 @@ describe('SandCastle', function () {
       return completedInit;
     });
     runs(function () {
-      env.describe('JasmineSuite', function () {
-        env.it('JasmineSpec', function () {
-          console.log('in test', window);
-          env.expect(window.foo).toEqual(undefined);
-          window.foo = 'baz';
-        });
-      });
+
       env.currentRunner.execute();
               
       expect(env.currentRunner.suites.length).toEqual(1);
       expect(env.currentRunner.suites[0].specs[0].results.getItems()[0].passed).toEqual(true);
-      expect(window.foo).toEqual('baz');
+      expect(window.foo).toEqual('bar');
     });
 
 
